@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vl53l1"
+version = "0.1.0"
+description = "Python package for VL53L1 ToF sensor (Linux)"
+authors = [{ name = "Kieran Cheung", email = "kieran.cheung@nethermind.io" }]
+requires-python = ">=3.11"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-data]
+"tof" = ["STSW-IMG013/user_lib/libtof.so"]
