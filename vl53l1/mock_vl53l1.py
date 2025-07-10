@@ -4,6 +4,8 @@ from .vl53l1 import ToFSensor
 class MockToFSensor(ToFSensor):
     def __init__(self):
         self.distance = 200
+        self.min_distance = 60
+        self.max_distance = 180
         self.direction = 1
         self.speed = 30
         self.last_time = time() 
@@ -30,11 +32,11 @@ class MockToFSensor(ToFSensor):
         self.distance += self.direction * self.speed * elapsed_time
 
         # Reverse direction if the limits are reached
-        if self.distance >= 250:
-            self.distance = 250
+        if self.distance >= self.max_distance:
+            self.distance = self.max_distance
             self.direction = -1
-        elif self.distance <= 20:
-            self.distance = 20
+        elif self.distance <= self.min_distance:
+            self.distance = self.min_distance
             self.direction = 1
 
         return round(self.distance)
