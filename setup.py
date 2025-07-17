@@ -1,19 +1,29 @@
-import os
+from setuptools import setup, find_packages
+from setuptools.command.build_py import build_py
 import subprocess
-from setuptools import setup
-from setuptools.command.build_ext import build_ext
-from setuptools.extension import Extension
+import os
+import shutil
 
-class MakeLibCommand(build_ext):
+class CustomBuild(build_py):
     def run(self):
-        subprocess.check_call(["make", "libtof"], cwd="STSW-IMG013/user_lib", env=os.environ)
-        os.makedirs("vl53l1", exist_ok=True)
-        self.copy_file("STSW-IMG013/libtof.so", "tof/libtof.so")
+        build_dir = os.path.abspath('STSW-IMG013/user_lib')
+        subprocess.check_call(['make', 'libtof'], cwd=build_dir)
+
+        lib_path = os.path.join(build_dir, 'libtof.so')
+        target_dir = os.path.join(self.build_lib, 'vl53l1')
+        self.mkpath(target_dir)
+        shutil.copy2(lib_path, target_dir)
+
         super().run()
 
 setup(
-    name="vl53l1",
-    version="0.1.0",
-    packages=["vl53l1"],
-    cmdclass={"build_ext": MakeLibCommand},
+    name='vl53l1',
+    version='0.1',
+    packages=find_packages(),
+    package_data={
+        'vl53l1': ['libtof.so'],
+    },
+    cmdclass={
+        'build_py': CustomBuild,
+    },
 )
